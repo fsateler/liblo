@@ -1028,6 +1028,7 @@ void test_deserialise()
     uint8_t midi_data[4] = { 0xff, 0xf7, 0xAA, 0x00 };
     lo_timetag tt = { 0x1, 0x80000000 };
     lo_blob b = NULL;
+    uint64_t u64_data = 0x0123456789abcdefULL;
 
     // build a message
     lo_message msg = lo_message_new();
@@ -1037,7 +1038,7 @@ void test_deserialise()
     lo_message_add_string(msg, "123");  // 2  s
     lo_message_add_blob(msg, btest);    // 3  b
     lo_message_add_midi(msg, midi_data);        // 4  m
-    lo_message_add_int64(msg, 0x0123456789abcdefULL);   // 5  h
+    lo_message_add_int64(msg, u64_data);   // 5  h
     lo_message_add_timetag(msg, tt);    // 6  t
     lo_message_add_double(msg, 0.9999); // 7  d
     lo_message_add_symbol(msg, "sym");  // 8  S
@@ -1063,7 +1064,7 @@ void test_deserialise()
     TEST(12 == lo_blobsize(b));
     TEST(!memcmp(lo_blob_dataptr(b), &testdata, sizeof(testdata)));
     TEST('m' == types[4] && !memcmp(&argv[4]->m, midi_data, 4));
-    TEST('h' == types[5] && 0x0123456789abcdefULL == argv[5]->h);
+    TEST('h' == types[5] && !memcmp(&argv[5]->h, &u64_data, sizeof(uint64_t)));
     TEST('t' == types[6] && 1 == argv[6]->t.sec
          && 0x80000000 == argv[6]->t.frac);
     TEST('d' == types[7] && fabs(argv[7]->d - 0.9999) < FLT_EPSILON);
