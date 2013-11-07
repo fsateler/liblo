@@ -1107,7 +1107,7 @@ void test_deserialise()
     TEST(12 == lo_blobsize(b));
     TEST(!memcmp(lo_blob_dataptr(b), &testdata, sizeof(testdata)));
     TEST('m' == types[4] && !memcmp(&argv[4]->m, midi_data, 4));
-    TEST('h' == types[5] && 0x0123456789abcdefULL == argv[5]->h);
+    TEST('h' == types[5] && !memcmp(&argv[5]->h, &u64_data, sizeof(uint64_t)));
     TEST('t' == types[6] && 1 == argv[6]->t.sec
          && 0x80000000 == argv[6]->t.frac);
     TEST('d' == types[7] && fabs(argv[7]->d - 0.9999) < FLT_EPSILON);
