@@ -696,6 +696,7 @@ ssize_t lo_validate_arg(lo_type type, void *data, ssize_t size)
 /* convert endianness of arg pointed to by data from network to host */
 void lo_arg_host_endian(lo_type type, void *data)
 {
+    int64_t temp;
     switch (type) {
     case LO_INT32:
     case LO_FLOAT:
@@ -712,7 +713,9 @@ void lo_arg_host_endian(lo_type type, void *data)
 
     case LO_INT64:
     case LO_DOUBLE:
-        *(int64_t *) data = lo_otoh64(*(int64_t *) data);
+        memcpy(&temp, data, sizeof(int64_t));
+        temp = lo_otoh64(temp);
+        memcpy(data, &temp, sizeof(int64_t));
         break;
 
     case LO_STRING:
