@@ -369,7 +369,7 @@ int lo_message_add_int64(lo_message m, int64_t a)
 
     if (lo_message_add_typechar(m, LO_INT64))
         return -1;
-    *nptr = b.nl;
+    memcpy(nptr, &b.nl, sizeof(b.nl));
     return 0;
 }
 
@@ -397,7 +397,7 @@ int lo_message_add_double(lo_message m, double a)
 
     if (lo_message_add_typechar(m, LO_DOUBLE))
         return -1;
-    *nptr = b.nl;
+    memcpy(nptr, &b.nl, sizeof(b.nl));
     return 0;
 }
 
@@ -1019,10 +1019,9 @@ void lo_arg_pp_internal(lo_type type, void *data, int bigendian)
         valtt.frac =
             bigendian ? lo_otoh32(*(uint32_t *) data) : *(uint32_t *) data;
     } else if (size == 8) {
+        memcpy(&val64.nl, data, sizeof(int64_t));
         if (bigendian) {
-            val64.nl = lo_otoh64(*(int64_t *) data);
-        } else {
-            val64.nl = *(int64_t *) data;
+            val64.nl = lo_otoh64(val64.nl);
         }
     }
 
